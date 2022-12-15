@@ -7,8 +7,8 @@ paths.map! { |path| path.map { |(x, y)| [x - shift, y] } }
 STARTING_POINT = [500 - shift, 0]
 WIDTH = all_points.max_by(&:first).first - shift + 1
 DEPTH = all_points.max_by(&:last).last + 1
-EMPTY_CELL = :'.'
-ROCK_CELL = :'#'
+EMPTY_CELL = :'  '
+ROCK_CELL = :'🪨 '
 
 map = Array.new(WIDTH) { Array.new(DEPTH, EMPTY_CELL) }
 
@@ -31,7 +31,7 @@ def print_map(map, unit = nil)
     current_slice = map.map { |column| column[layer] }
 
     if unit&.last == layer
-      current_slice[unit.first] = :O
+      current_slice[unit.first] = :'💧'
     end
 
     puts current_slice.join
@@ -66,7 +66,7 @@ total_units = 0
     elsif sand_unit.first == WIDTH - 1
       break :void
     else
-      map[sand_unit.first][sand_unit.last] = :O
+      map[sand_unit.first][sand_unit.last] = :'💧'
       total_units += 1
       break
     end
