@@ -1,0 +1,30 @@
+MONKEYS = [
+  {
+    items: [79, 98],
+    operation: lambda { |old| old * 19 },
+    test: lambda { |x| x % 23 == 0 },
+    positive: 2,
+    negative: 3
+  },
+  {
+    items: [54, 65, 75, 74],
+    operation: lambda { |old| old + 6 },
+    test: lambda { |x| x % 19 == 0 },
+    positive: 2,
+    negative: 0
+  },
+  {
+    items: [79, 60, 97],
+    operation: lambda { |old| old * old },
+    test: lambda { |x| x % 13 == 0 },
+    positive: 1,
+    negative: 3
+  },
+  {
+    items: [74],
+    operation: lambda { |old| old + 3 },
+    test: lambda { |x| x % 17 == 0 },
+    positive: 0,
+    negative: 1
+  }
+]
