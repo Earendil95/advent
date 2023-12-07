@@ -5,11 +5,11 @@ class Hand
   CARDS = %w[J 2 3 4 5 6 7 8 9 T Q K A].each_with_index.to_h.freeze # cards with their values
   COMBINATIONS = [
     [1, 1, 1, 1, 1], # high card
-    [2, 1, 1, 1],    # one pair
-    [2, 2, 1],       # two pairs
-    [3, 1, 1],       # three of a kind
-    [3, 2],          # full house
-    [4, 1],          # four of a kind
+    [1, 1, 1, 2],    # one pair
+    [1, 2, 2],       # two pairs
+    [1, 1, 3],       # three of a kind
+    [2, 3],          # full house
+    [1, 4],          # four of a kind
     [5]              # five of a kind
   ].each_with_index.to_h.freeze
 
@@ -23,7 +23,7 @@ class Hand
     @type ||= begin
       amounts[top_combination.first] += amounts.delete('J').to_i unless top_combination.first == 'J' # five Js edgecase
 
-      COMBINATIONS.fetch(amounts.values.sort.reverse)
+      COMBINATIONS.fetch(amounts.values.sort)
     end
   end
 
