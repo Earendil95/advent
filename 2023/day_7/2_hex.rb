@@ -2,7 +2,7 @@
 
 # nodoc
 class Hand
-  CARDS = %w[2 3 4 5 6 7 8 9 T J Q K A].each_with_index.to_h.freeze # cards with their values
+  CARDS = %w[J 2 3 4 5 6 7 8 9 T Q K A].each_with_index.to_h.freeze # cards with their values
   COMBINATIONS = [
     [1, 1, 1, 1, 1], # high card
     [1, 1, 1, 2],    # one pair
@@ -21,26 +21,34 @@ class Hand
 
   def type
     @type ||= begin
-      amounts = cards.tally.values.sort
-      COMBINATIONS.fetch(amounts)
+      amounts[top_combination.first] += amounts.delete('J').to_i unless top_combination.first == 'J' # five Js edgecase
+
+      COMBINATIONS.fetch(amounts.values.sort)
     end
   end
 
-  def <=>(other)
-    types_cmp = type <=> other.type
-    return types_cmp unless types_cmp.zero?
+  def to_i
+    [type + 1, *cards.map { CARDS.fetch(_1).to_s(16) }].join.to_i(16)
+  end
 
-    cards.zip(other.cards).each do |(card, other_card)|
-      cards_cmp = CARDS.fetch(card) <=> CARDS.fetch(other_card)
-      return cards_cmp unless cards_cmp.zero?
+  private
+
+  def amounts
+    @amounts ||= cards.tally
+  end
+
+  def top_combination
+    amounts.to_a.max do |(card_a, amount_a), (card_b, amount_b)|
+      next -1 if card_a == 'J'
+      next 1 if card_b == 'J'
+
+      amount_a <=> amount_b
     end
-
-    0
   end
 end
 
 hands_and_bids = File.readlines(ARGV[0] || 'test_input.txt', chomp: true).map { _1.split(' ') }
                      .map { |(hand, bid)| [Hand.new(hand), bid.to_i] }
 
-puts hands_and_bids.sort_by(&:first).map(&:last).each_with_index
+puts hands_and_bids.sort_by { _1.first.to_i }.map(&:last).each_with_index
                    .inject(0) { |sum, (bid, index)| sum + bid * (index + 1) }

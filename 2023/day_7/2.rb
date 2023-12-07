@@ -50,10 +50,7 @@ class Hand
       next -1 if card_a == 'J'
       next 1 if card_b == 'J'
 
-      amount_cmp = amount_a <=> amount_b
-      next amount_cmp unless amount_cmp.zero?
-
-      CARDS.fetch(card_a) <=> CARDS.fetch(card_b)
+      amount_a <=> amount_b
     end
   end
 end

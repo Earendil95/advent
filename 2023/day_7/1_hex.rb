@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "pry-byebug"
+
 # nodoc
 class Hand
   CARDS = %w[2 3 4 5 6 7 8 9 T J Q K A].each_with_index.to_h.freeze # cards with their values
@@ -26,21 +28,13 @@ class Hand
     end
   end
 
-  def <=>(other)
-    types_cmp = type <=> other.type
-    return types_cmp unless types_cmp.zero?
-
-    cards.zip(other.cards).each do |(card, other_card)|
-      cards_cmp = CARDS.fetch(card) <=> CARDS.fetch(other_card)
-      return cards_cmp unless cards_cmp.zero?
-    end
-
-    0
+  def to_i
+    [type + 1, *cards.map { CARDS.fetch(_1).to_s(16) }].join.to_i(16)
   end
 end
 
 hands_and_bids = File.readlines(ARGV[0] || 'test_input.txt', chomp: true).map { _1.split(' ') }
                      .map { |(hand, bid)| [Hand.new(hand), bid.to_i] }
 
-puts hands_and_bids.sort_by(&:first).map(&:last).each_with_index
+puts hands_and_bids.sort_by { _1.first.to_i }.map(&:last).each_with_index
                    .inject(0) { |sum, (bid, index)| sum + bid * (index + 1) }
